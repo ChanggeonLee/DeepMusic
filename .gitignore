@@ -1,0 +1,12 @@
+.ipynb_checkpoints
+data/
+data_png/
+model/
+test_data/
+test_data_png/
+inception.png
+backup/
+DeepMusic-Copy1-resnet.ipynb
+DeepMusic-Copy1.ipynb
+*.wav
+wavtopng_stft-Copy1.ipynb
