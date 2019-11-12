@@ -69,6 +69,24 @@ def save_wav(data_path, path_png, num=1):
         plt.close(fig)
         gc.collect()
 
+def save_wav_only_vocal(data_path, path_png,  num=3):
+    length = get_length(data_path)
+    
+    for offset in range(0,int(length),num):
+        fig = plt.figure(figsize=(5.04, 2.16))
+        ax = plt.gca()
+        ax.axis('off')
+
+        # load type         
+        y, sr = librosa.load(data_path,offset=offset, duration=10)
+        S_full, phase = librosa.magphase(librosa.stft(y))
+        librosa.display.specshow(librosa.amplitude_to_db(S_full, ref=np.max),
+                         y_axis='hz', x_axis='off', sr=sr, ax=ax)
+      
+        fig.savefig ( path_png + "_only_vocal_"+str(num) + "_" +str(offset) )
+        plt.close(fig)
+        gc.collect()
+
 
 # In[4]:
 
@@ -105,17 +123,19 @@ def load_data(data_path):
     
     return x_data
 
-
+def get_label(path="./data"):
+    print(os.listdir(path))
+    return os.listdir(path)
 # In[10]:
 
 
 def get_music_name(y):
     predict = []
-    label = ['GIVE_LOVE_AKMU', 'Palette_IU', '여수_밤바다_버스커버스커', '스물셋_IU', '밤편지_IU', '방에_모기가_있어_10cm', 'Natural_ImagineDragons', '삐삐_IU', 'the_one_samkim', '200%_AKMU', '오늘_오왠']
+    label = get_label()
     for y_index in y:
         predict.append(label[np.argmax(y_index)])
     
-#     print(predict)
+    print(predict)
     result = Counter(predict).most_common(1)
     return result[0][0]
 
@@ -132,13 +152,15 @@ def remove_file(fname, path):
 
 
 if __name__ == "__main__":
+    # print(get_label())
+
     # args로 경로 입력
     fname=sys.argv[1]
     path=fname+"_png/"
     os.mkdir(path)
     
     # 입력 받은 경로에 관한 이미지를 만들어서 저장
-    save_wav(fname, path)
+    save_wav_only_vocal(fname, path)
     
     # 이미지를 array 받아오기
     x = load_data(path)
