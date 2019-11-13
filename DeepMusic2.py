@@ -4,14 +4,20 @@
 # In[1]:
 
 
+
 from __future__ import print_function
 import os
 import numpy as np
 import cv2
-from sklearn.model_selection import train_test_split
-import shutil
-import tensorflow as tf
+import os
+import sys
+stderr = sys.stderr
+sys.stderr = open(os.devnull, 'w')
 import keras
+sys.stderr = stderr
+import tensorflow as tf
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 from keras.models import Sequential
 from keras import losses
 from keras.layers import Dense, Dropout, Flatten, BatchNormalization
@@ -27,113 +33,13 @@ from keras.utils import plot_model
 from keras.layers import Activation
 import tensorflow as tf
 from keras.applications.resnet50 import ResNet50, decode_predictions
-
-
-# In[2]:
-
-
-def get_total(data_path):
-    subdir = os.listdir(data_path)
-    return len(subdir)
-
-
-# In[3]:
-
-
-def shuffle_XY_paths(X,Y): 
-    assert (X.shape[0] == Y.shape[0] )
-    idx = np.array(range(Y.shape[0]))
-    np.random.shuffle(idx)
-    newX = np.copy(X)
-    newY = np.copy(Y)
-    
-    for i in range(len(idx)):
-        newX[i] = X[idx[i],:,:]
-        newY[i] = Y[idx[i],:]
-
-    return newX, newY
-
-
-# In[4]:
-
-
-def load_data():
-    height = 216
-    width = 504
-    
-    x_data = []
-    y_data = []
-
-    data_path = "/home/changgeonlee/Project/DeepMusic/data_png"
-    total = get_total(data_path)
-    subdir = os.listdir(data_path)
-
-    for idex, subdir in enumerate(subdir):
-        label = [0 for i in range(total)]
-        label[idex] = 1
-
-        for item in os.listdir(data_path+"/"+subdir):
-            img_path = data_path+"/"+subdir+"/"+item
-            img = cv2.imread(img_path,0)
-            x_data.append(img/255)
-            y_data.append(label)
-
-    x_data = np.array(x_data)
-    y_data = np.array(y_data)
-
-    x_train, y_train = shuffle_XY_paths(x_data, y_data)
-
-    x_train = x_train.reshape(x_train.shape[0], height, width, 1)
-
-    x_train = x_train.astype('float32')/255
-    
-    input_shape = (height, width,1)
-
-    return x_train, y_train,input_shape
-
-
-# In[5]:
-
-
-def test_load_data():
-    height = 216
-    width = 504
-    
-    x_data = []
-    y_data = []
-
-    data_path = "/home/changgeonlee/Project/DeepMusic/test_data_png"
-    total = get_total(data_path)
-    subdir = os.listdir(data_path)
-
-    for idex, subdir in enumerate(subdir):
-        label = [0 for i in range(total)]
-        label[idex] = 1
-        for item in os.listdir(data_path+"/"+subdir):
-            img_path = data_path+"/"+subdir+"/"+item
-            img = cv2.imread(img_path,0)
-            x_data.append(img/255)
-            y_data.append(label)
-
-    x_data = np.array(x_data)
-    y_data = np.array(y_data)
-
-    x_train, y_train = shuffle_XY_paths(x_data, y_data)
-
-    x_train = x_train.reshape(x_train.shape[0], height, width, 1)
-
-    x_train = x_train.astype('float32')/255
-    
-    input_shape = (height, width,1)
-
-    return x_train, y_train
-
-
-# In[11]:
-
-
-
-
+# import os
+from os.path import isfile
+import shutil
+import gc
+import warnings 
+# import sys
+warnings.filterwarnings("ignore")
 
 def build_model(input_shape):
     nb_filters = 32  # number of convolutional filters to use
@@ -200,12 +106,18 @@ def save_model(model, path="/home/changgeonlee/Project/DeepMusic/model"):
     model.save_weights(path+"DeepMusic2.h5")
     print("Saved model to disk")
 
+def load_data():
+    x_train = np.load("./data/x_train.npy")
+    y_train = np.load("./data/y_train.npy")
+    x_test = np.load("./data/x_test.npy")
+    y_test = np.load("./data/y_test.npy")
 
-# In[8]:
+    return x_train, y_train, x_test, y_test
 
 
-x_train, y_train, input_shape = load_data()
-x_test, y_test = test_load_data()
+x_train, y_train, x_test, y_test = load_data()
+input_shape =  (216, 504,1)
+# x_test, y_test = test_load_data()
 print("input shape : ",input_shape)
 print("x train : ", x_train.shape)
 print("y train : ", y_train.shape)
@@ -220,16 +132,6 @@ model = build_model(input_shape)
 model.summary()
 
 
-# In[17]:
-
-adam = keras.optimizers.Adam(learning_rate=0.01)
-model.compile(loss=keras.losses.categorical_crossentropy,
-            optimizer=adam,
-            metrics=['accuracy'])
-
-
-model.summary()
-
 model.fit(x_train, y_train,
           batch_size=30,
           epochs=20,
@@ -237,17 +139,4 @@ model.fit(x_train, y_train,
           validation_data=(x_test, y_test),
           shuffle=True)
 
-
-
-
-
-
-
 save_model(model)
-
-
-# In[ ]:
-
-
-
-

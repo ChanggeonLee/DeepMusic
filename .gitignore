@@ -10,3 +10,4 @@ DeepMusic-Copy1-resnet.ipynb
 DeepMusic-Copy1.ipynb
 *.wav
 wavtopng_stft-Copy1.ipynb
+data_wav/

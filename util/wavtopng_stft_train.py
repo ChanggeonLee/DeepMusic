@@ -13,25 +13,19 @@ import shutil
 import gc
 import warnings 
 import numpy as np
+import random
+import string
 warnings.filterwarnings("ignore")
 
 
-# In[6]:
-
-
-path="/home/changgeonlee/Project/DeepMusic"
-path_data=path+"/data/"
-path_png=path+"/data_png/"
-
-
-# In[7]:
-
-
-shutil.rmtree(path_png)
-os.mkdir(path_png)
-
-
 # In[8]:
+
+
+def randomString(stringLength=40):
+    """Generate a random string of fixed length """
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
+
 
 
 def get_length(path):
@@ -76,7 +70,7 @@ def save_wav_only_vocal(path_png, classname, data_path, num):
         librosa.display.specshow(librosa.amplitude_to_db(S_full, ref=np.max),
                          y_axis='hz', x_axis='off', sr=sr, ax=ax)
       
-        fig.savefig ( path_png + classname +"_only_vocal_"+str(num) + "_" +str(offset) )
+        fig.savefig ( path_png + classname +"_only_vocal_"+randomString() )
         plt.close(fig)
         gc.collect()
 
@@ -95,7 +89,7 @@ def save_wav_only_vocal_noise(path_png, classname, data_path, num, noise):
         librosa.display.specshow(librosa.amplitude_to_db(S_full, ref=np.max),
                          y_axis='hz', x_axis='off', sr=sr, ax=ax)
       
-        fig.savefig ( path_png + classname +"_only_vocal_noise"+str(num)+"_"+str(noise)+"_" +str(offset) )
+        fig.savefig ( path_png + classname +"_only_vocal_noise_"+randomString() )
         plt.close(fig)
         gc.collect()
 
@@ -114,7 +108,7 @@ def save_wav_only_vocal_pitch(path_png, classname, data_path, num):
         librosa.display.specshow(librosa.amplitude_to_db(S_full, ref=np.max),
                          y_axis='hz', x_axis='off', sr=sr, ax=ax)
       
-        fig.savefig ( path_png + classname +"_only_vocal_pitch"+str(num) + "_" +str(offset) )
+        fig.savefig ( path_png + classname +"_only_vocal_pitch_"+randomString() )
         plt.close(fig)
         gc.collect()
 
@@ -136,45 +130,30 @@ def manipulate(data, sampling_rate):
 
 def get_music(path_png, music_name, data_path):
     class_names = os.listdir(data_path)
-    
     for idx, classname in enumerate(class_names):
-        print(str(idx) + "생성 중 : " + music_name + "_" + classname)
-        save_wav_only_vocal(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 3)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 3, 0.005)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 3, 0.05)
+        save_wav_only_vocal(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 3)    
         save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 3, 0.008)
         save_wav_only_vocal_pitch(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 3)
-        save_wav_only_vocal_pitch(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 4)
-
-        save_wav_only_vocal(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 5)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 5, 0.003)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 5, 0.02)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 5, 0.007)
-        save_wav_only_vocal_pitch(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 5)
-        save_wav_only_vocal_pitch(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 6)
-
-        save_wav_only_vocal(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 10)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 10, 0.007)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 10, 0.07)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 10, 0.008)
-        save_wav_only_vocal_pitch(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 10)
-        save_wav_only_vocal_pitch(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 11)
-
-        save_wav_only_vocal(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 30)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 30, 0.007)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 30, 0.07)
-        save_wav_only_vocal_noise(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 30, 0.008)
-        save_wav_only_vocal_pitch(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 30)
-        save_wav_only_vocal_pitch(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 31)
         gc.collect()
-
-
 # In[11]:
+
+
+path="/home/changgeonlee/Project/DeepMusic"
+path_data=path+"/data_wav/"
+path_png=path+"/data_png_train/"
+
+
+# In[7]:
+
+
+# shutil.rmtree(path_png)
+os.mkdir(path_png)
 
 
 class_names = os.listdir(path_data)
 for idx, classname in enumerate(class_names):
     data_path = path_data+classname
+    print(str(idx+1) + "생성 중 : " +classname)
     try:
         # 이미지 저장할 폴더 생성         
         os.mkdir(path_png+classname)
@@ -182,34 +161,3 @@ for idx, classname in enumerate(class_names):
         gc.collect()
     except FileExistsError:
         print ("이미 생성됨")    
-
-
-# In[ ]:
-
-
-# path="/home/changgeonlee/Project/DeepMusic"
-# path_data=path+"/test_data/"
-# path_png=path+"/test_data_png/"
-
-
-# # In[ ]:
-
-
-# shutil.rmtree(path_png)
-# os.mkdir(path_png)
-
-
-# # In[ ]:
-
-
-# class_names = os.listdir(path_data)
-# for idx, classname in enumerate(class_names):
-#     data_path = path_data+classname
-#     try:
-#          # 이미지 저장할 폴더 생성         
-#         os.mkdir(path_png+classname)
-#         get_music(path_png,classname,data_path)
-#         gc.collect()
-#     except FileExistsError:
-#         print ("이미 생성됨")  
-
