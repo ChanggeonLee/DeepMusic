@@ -140,7 +140,7 @@ def get_music(path_png, music_name, data_path):
 
 path="/home/changgeonlee/Project/DeepMusic"
 path_data=path+"/data_wav/"
-path_png=path+"/data_png_train/"
+path_png=path+"/data_png/"
 
 
 # In[7]:
