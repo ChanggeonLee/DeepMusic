@@ -32,9 +32,13 @@ def save_wav_only_vocal(path_png, data_path, num):
 
         # load type         
         y, sr = librosa.load(data_path,offset=offset, duration=10)
-        S_full, phase = librosa.magphase(librosa.stft(y))
-        librosa.display.specshow(librosa.amplitude_to_db(S_full, ref=np.max),
-                         y_axis='hz', x_axis='off', sr=11025, ax=ax)
+       # S_full, phase = librosa.magphase(librosa.stft(y))
+       # librosa.display.specshow(librosa.amplitude_to_db(S_full, ref=np.max),
+        #                 y_axis='hz', x_axis='off', sr=11025, ax=ax)
+      
+        S = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128, fmax=8000)
+        S_dB = librosa.power_to_db(S, ref=np.max) 
+        librosa.display.specshow(S_dB, y_axis='off', x_axis='off', sr=11025, ax=ax)
       
         fig.savefig ( path_png +"only_vocal_"+randomString() )
         plt.close(fig)
@@ -44,10 +48,11 @@ def get_music(path_png, music_name, data_path):
     class_names = os.listdir(data_path)
     for idx, classname in enumerate(class_names):
         save_wav_only_vocal(path_png+"/"+music_name +"/",data_path+"/"+classname, 5)
+        save_wav_only_vocal(path_png+"/"+music_name +"/",data_path+"/"+classname, 8)
         save_wav_only_vocal(path_png+"/"+music_name +"/",data_path+"/"+classname, 10)
         gc.collect()
 
-path="/home/changgeonlee/Project/DeepMusic"
+path="/home/jang/DeepMusic/DeepMusic_data"
 path_data=path+"/test_wav/"
 path_png=path+"/test_data_png/"
 
