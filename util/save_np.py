@@ -31,14 +31,14 @@ def load_data():
     x_data = []
     y_data = []
 
-    data_path = "/home/changgeonlee/Project/DeepMusic/data_png"
+    data_path = "/home/changgeonlee/Project/DeepMusic/data_png_hum"
     total = get_total(data_path)
     subdir = os.listdir(data_path)
 
     for idex, subdir in enumerate(subdir):
         label = [0 for i in range(total)]
         label[idex] = 1
-
+        print(str(idex+1))
         for item in os.listdir(data_path+"/"+subdir):
             img_path = data_path+"/"+subdir+"/"+item
             img = cv2.imread(img_path,0)
