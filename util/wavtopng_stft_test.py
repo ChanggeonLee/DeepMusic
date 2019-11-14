@@ -11,7 +11,7 @@ import random
 import string
 warnings.filterwarnings("ignore")
 
-def randomString(stringLength=40):
+def randomString(stringLength=45):
     """Generate a random string of fixed length """
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(stringLength))
@@ -22,7 +22,7 @@ def get_length(path):
     gc.collect()
     return length
 
-def save_wav_only_vocal(path_png, classname, data_path, num):
+def save_wav_only_vocal(path_png, data_path, num):
     length = get_length(data_path)
     
     for offset in range(0,int(length),num):
@@ -36,15 +36,15 @@ def save_wav_only_vocal(path_png, classname, data_path, num):
         librosa.display.specshow(librosa.amplitude_to_db(S_full, ref=np.max),
                          y_axis='hz', x_axis='off', sr=11025, ax=ax)
       
-        fig.savefig ( path_png + classname +"_only_vocal_"+randomString() )
+        fig.savefig ( path_png +"only_vocal_"+randomString() )
         plt.close(fig)
         gc.collect()
 
 def get_music(path_png, music_name, data_path):
     class_names = os.listdir(data_path)
     for idx, classname in enumerate(class_names):
-        save_wav_only_vocal(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 5)
-        save_wav_only_vocal(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 10)
+        save_wav_only_vocal(path_png+"/"+music_name +"/",data_path+"/"+classname, 5)
+        save_wav_only_vocal(path_png+"/"+music_name +"/",data_path+"/"+classname, 10)
         gc.collect()
 
 path="/home/changgeonlee/Project/DeepMusic"
@@ -57,9 +57,8 @@ os.mkdir(path_png)
 class_names = os.listdir(path_data)
 for idx, classname in enumerate(class_names):
     data_path = path_data+classname
+    print(str(idx+1) + "생성 중 : " +classname)  
     try:
-         # 이미지 저장할 폴더 생성       
-        print(str(idx+1) + "생성 중 : " +classname)  
         os.mkdir(path_png+classname)
         get_music(path_png,classname,data_path)
         gc.collect()
