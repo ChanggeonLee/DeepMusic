@@ -48,6 +48,31 @@ def save_wav_only_vocal(path_png, data_path, num):
         plt.close(fig)
         gc.collect()
 
+def save_wav_only_vocal_pitch(path_png, classname, data_path, num):
+    length = get_length(data_path)
+
+    for offset in range(0,int(length),num):
+        fig = plt.figure(figsize=(5.04, 2.16))
+        ax = plt.gca()
+        ax.axis('off')
+
+        # load type         
+        y, sr = librosa.load(data_path,offset=offset, duration=5)
+        y = manipulate(y, sr)
+        S_full, phase = librosa.magphase(librosa.stft(y))
+        librosa.display.specshow(librosa.amplitude_to_db(S_full, ref=np.max),
+                         y_axis='hz', x_axis='off', sr=sr, ax=ax)
+
+        fig.savefig ( path_png + classname +"_only_vocal_pitch_"+randomString() )
+        plt.close(fig)
+        gc.collect()
+
+def manipulate(data, sampling_rate):
+    bins_per_octave = 12
+    pitch_pm = 2
+    pitch_change =  pitch_pm * 2*(np.random.uniform())
+    return librosa.effects.pitch_shift(data, sampling_rate, pitch_change)
+
 def get_music(path_png, music_name, data_path):
     class_names = os.listdir(data_path)
     for idx, classname in enumerate(class_names):

@@ -44,11 +44,13 @@ def save_wav_only_vocal(path_png, data_path, num):
         plt.close(fig)
         gc.collect()
 
+
 def get_music(path_png, music_name, data_path):
     class_names = os.listdir(data_path)
     for idx, classname in enumerate(class_names):
+        save_wav_only_vocal(path_png+"/"+music_name +"/",data_path+"/"+classname, 3)  
+      #  save_wav_only_vocal_pitch(path_png+"/"+music_name +"/",classname,data_path+"/"+classname, 5)
         save_wav_only_vocal(path_png+"/"+music_name +"/",data_path+"/"+classname, 5)
-        save_wav_only_vocal(path_png+"/"+music_name +"/",data_path+"/"+classname, 8)
         save_wav_only_vocal(path_png+"/"+music_name +"/",data_path+"/"+classname, 10)
         gc.collect()
 

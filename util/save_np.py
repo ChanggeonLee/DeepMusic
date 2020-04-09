@@ -31,7 +31,7 @@ def load_data():
     x_data = []
     y_data = []
 
-    data_path = "/home/changgeonlee/Project/DeepMusic/data_png_hum"
+    data_path = "/home/jang/DeepMusic/DeepMusic_data/data_png"
     total = get_total(data_path)
     subdir = os.listdir(data_path)
 
@@ -41,7 +41,7 @@ def load_data():
         print(str(idex+1))
         for item in os.listdir(data_path+"/"+subdir):
             img_path = data_path+"/"+subdir+"/"+item
-            img = cv2.imread(img_path,0)
+            img = cv2.imread(img_path,1)
             gc.collect()
             x_data.append(img/255)
             y_data.append(label)
@@ -51,11 +51,11 @@ def load_data():
 
     x_train, y_train = shuffle_XY_paths(x_data, y_data)
 
-    x_train = x_train.reshape(x_train.shape[0], height, width, 1)
+    x_train = x_train.reshape(x_train.shape[0], height, width, 3)
 
     x_train = x_train.astype('float32')/255
     
-    input_shape = (height, width,1)
+    input_shape = (height, width, 3)
 
     return x_train, y_train
 
@@ -66,7 +66,7 @@ def test_load_data():
     x_data = []
     y_data = []
 
-    data_path = "/home/changgeonlee/Project/DeepMusic/test_data_png"
+    data_path = "/home/jang/DeepMusic/DeepMusic_data/test_data_png"
     total = get_total(data_path)
     subdir = os.listdir(data_path)
 
@@ -75,7 +75,7 @@ def test_load_data():
         label[idex] = 1
         for item in os.listdir(data_path+"/"+subdir):
             img_path = data_path+"/"+subdir+"/"+item
-            img = cv2.imread(img_path,0)
+            img = cv2.imread(img_path,1)
             x_data.append(img/255)
             y_data.append(label)
 
@@ -84,11 +84,11 @@ def test_load_data():
 
     x_train, y_train = shuffle_XY_paths(x_data, y_data)
 
-    x_train = x_train.reshape(x_train.shape[0], height, width, 1)
+    x_train = x_train.reshape(x_train.shape[0], height, width, 3)
 
     x_train = x_train.astype('float32')/255
     
-    input_shape = (height, width,1)
+    input_shape = (height, width,3)
 
     return x_train, y_train
 
@@ -96,10 +96,10 @@ def test_load_data():
 # In[11]:
 
 def save_data(x_train, y_train, x_test, y_test):
-    np.save("../data/x_train.npy",x_train)
-    np.save("../data/y_train.npy",y_train)
-    np.save("../data/x_test.npy",x_test)
-    np.save("../data/y_test.npy",y_test)
+    np.save("/home/jang/DeepMusic/DeepMusic/data/x_train.npy",x_train)
+    np.save("/home/jang/DeepMusic/DeepMusic/data/y_train.npy",y_train)
+    np.save("/home/jang/DeepMusic/DeepMusic/data/x_test.npy",x_test)
+    np.save("/home/jang/DeepMusic/DeepMusic/data/y_test.npy",y_test)
 
 
 x_train, y_train = load_data()

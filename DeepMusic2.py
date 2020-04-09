@@ -44,7 +44,7 @@ warnings.filterwarnings("ignore")
 def build_model(input_shape):
     nb_filters = 32  # number of convolutional filters to use
     pool_size = (2, 2)  # size of pooling area for max pooling
-    kernel_size = (3, 3)  # convolution kernel size
+    kernel_size =(2,2)  # convolution kernel size
     nb_layers = 4
     total = 10
     
@@ -56,38 +56,47 @@ def build_model(input_shape):
                      padding='valid', 
                      input_shape=input_shape, 
                      activation='relu'))
-    model.add(Conv2D(32, kernel_size, activation='relu'))
+#    model.add(Conv2D(32, kernel_size, use_bias=False, activation='relu'))
     model.add(MaxPooling2D(pool_size=pool_size))
-    keras.layers.Dropout(rate=0.7)
-    
-    
-    model.add(Conv2D(64, kernel_size, use_bias=False))
-    model.add(BatchNormalization())
-    model.add(Activation("relu"))
-    model.add(Conv2D(128, kernel_size, activation='relu'))
-    model.add(MaxPooling2D(pool_size=pool_size))
-    keras.layers.Dropout(rate=0.7)
-    
-    model.add(Conv2D(256, kernel_size, use_bias=False))
-    model.add(BatchNormalization())
-    model.add(Activation("relu"))
-    model.add(Conv2D(256, kernel_size, activation='relu'))
-    model.add(MaxPooling2D(pool_size=pool_size))
-    keras.layers.Dropout(rate=0.7)
+    keras.layers.Dropout(rate=0.2)
+   
 
-    model.add(Conv2D(512, kernel_size, use_bias=False))
+    model.add(Conv2D(32, kernel_size, use_bias=False, padding='same'))
     model.add(BatchNormalization())
     model.add(Activation("relu"))
-    model.add(Conv2D(512, kernel_size, activation='relu'))
+   # model.add(Conv2D(64, kernel_size,activation='relu'))
     model.add(MaxPooling2D(pool_size=pool_size))
-    keras.layers.Dropout(rate=0.7)
+    keras.layers.Dropout(rate=0.2)
+    
+
+    model.add(Conv2D(64, kernel_size, use_bias=False, padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation("relu"))
+   # model.add(Conv2D(64, kernel_size,activation='relu'))
+    model.add(MaxPooling2D(pool_size=pool_size, padding='same'))
+    keras.layers.Dropout(rate=0.2)
     
     
+
+    model.add(Conv2D(128, kernel_size, use_bias=False, padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation("relu"))
+   # model.add(Conv2D(128, kernel_size,activation='relu'))
+    model.add(MaxPooling2D(pool_size=pool_size,padding='same'))
+    keras.layers.Dropout(rate=0.2)
+
+
+
+    model.add(Conv2D(256, kernel_size, use_bias=False, padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation("relu"))
+    model.add(MaxPooling2D(pool_size=pool_size))
+    keras.layers.Dropout(rate=0.2)
     model.add(Flatten())
-    model.add(Dense(256, activation='relu'))
-    model.add(Dense(128, activation='relu'))
+
+   # model.add(Dense(128, activation='relu'))
     model.add(Dense(10, activation='softmax'))
-    
+       
     adam = keras.optimizers.Adam(learning_rate=0.00005)
     model.compile(loss=keras.losses.categorical_crossentropy,
                   optimizer=adam,
@@ -99,11 +108,11 @@ def build_model(input_shape):
 # In[20]:
 
 
-def save_model(model, path="/home/changgeonlee/Project/DeepMusic/model"):
+def save_model(model, path="/home/jang/DeepMusic/DeepMusic/model/"):
     model_json = model.to_json()
-    with open(path+"DeepMusic2.json", "w") as json_file : 
+    with open(path+"DeepMusic.json", "w") as json_file : 
         json_file.write(model_json)
-    model.save_weights(path+"DeepMusic2.h5")
+    model.save_weights(path+"DeepMusic.h5")
     print("Saved model to disk")
 
 def load_data():
@@ -116,7 +125,7 @@ def load_data():
 
 
 x_train, y_train, x_test, y_test = load_data()
-input_shape =  (216, 504,1)
+input_shape =  (216, 504,3)
 # x_test, y_test = test_load_data()
 print("input shape : ",input_shape)
 print("x train : ", x_train.shape)
@@ -133,8 +142,8 @@ model.summary()
 
 
 model.fit(x_train, y_train,
-          batch_size=30,
-          epochs=20,
+          batch_size=20,
+          epochs=30,
           verbose=1,
           validation_data=(x_test, y_test),
           shuffle=True)
